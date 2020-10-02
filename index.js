@@ -4,6 +4,7 @@ const socketio = require('socket.io');
 const http = require('http');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 mongoose.connect(process.env.MONGO_URL);
 const app = express();
@@ -27,6 +28,7 @@ const User = require('./models/User.model');
 const Room = require('./models/Room.model');
 const Message = require('./models/Message.model');
 
+app.use(cors());
 app.use('/api', apiRoute);
 
 app.get('/', (req,res) => res.send('All done'));
