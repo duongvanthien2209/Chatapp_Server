@@ -29,6 +29,8 @@ const Message = require('./models/Message.model');
 
 app.use('/api', apiRoute);
 
+app.get('/', (req,res) => res.send('All done'));
+
 io.on('connection', socket => {
     console.log('Has connection');
 
