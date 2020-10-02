@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 
 mongoose.connect(process.env.MONGO_URL);
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const server = http.createServer(app);
 const io = socketio(server);
 
