@@ -2,6 +2,15 @@ require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+// Cloudinary - Dùng để upload file lên cloud
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+});
+
 const User = require('../../models/User.model');
 const Response = require('../../helpers/response.helper');
 
@@ -58,7 +67,9 @@ module.exports.postUpdate = async (req, res) => {
             return;
         }
 
-        let avatar = file.path.split('\\').slice(1).join('/');
+        // let avatar = file.path.split('\\').slice(1).join('/');
+        let result = await cloudinary.uploader.upload(req.file.path);
+        let avatar = result.url;
         password = password === user.password ? user.password : await bcrypt.hash(password, saltRounds);
 
         await User.findByIdAndUpdate(id, { name, email, password, avatar });
