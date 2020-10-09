@@ -3,25 +3,27 @@ const User = require('../../models/User.model');
 const Response = require('../../helpers/response.helper');
 
 module.exports.getMessagesByRoomId = async (req, res) => {
-    let { roomId } = req.params;
+  const { roomId } = req.params;
 
-    try {
-        if (!roomId) {
-            throw new Error('Có lỗi xảy ra');
-            return;
-        }
-
-        let messages = await Message.find({ roomId });
-        messages = await Promise.all(messages.map(async item => {
-            let user = await User.findById(item.userId);
-
-            return { ...item._doc, user };
-        }));
-
-        messages.sort((a, b) => a.dateCreate.getTime() - b.dateCreate.getTime());
-
-        Response.success(res, { messages });
-    } catch (error) {
-        Response.error(res, error);
+  try {
+    if (!roomId) {
+      throw new Error('Có lỗi xảy ra');
     }
-}
+
+    let messages = await Message.find({ roomId });
+    messages = await Promise.all(
+      messages.map(async (item) => {
+        const user = await User.findById(item.userId);
+
+        // eslint-disable-next-line no-underscore-dangle
+        return { ...item._doc, user };
+      }),
+    );
+
+    messages.sort((a, b) => a.dateCreate.getTime() - b.dateCreate.getTime());
+
+    Response.success(res, { messages });
+  } catch (error) {
+    Response.error(res, error);
+  }
+};
