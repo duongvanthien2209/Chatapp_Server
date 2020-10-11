@@ -6,8 +6,8 @@ class Response {
     });
   }
 
-  static error(res, err, status = 400) {
-    return res.status(status).json({
+  static error(res, err) {
+    return res.json({
       status: 'failed',
       error: {
         message: err.message,

@@ -35,9 +35,6 @@ io.on('connection', (socket) => {
   console.log('Has connection');
 
   socket.on('join', async ({ roomId, userId }, callback) => {
-    // console.log(name, room, callback);
-    // callback({ message: 'Done' }); => Dùng để gởi thông báo lại cho client
-
     // 1. Kiểm tra xem roomId, userId có tồn tại
     // 2. Thêm user vào room
     try {

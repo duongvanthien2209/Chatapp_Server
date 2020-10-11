@@ -9,9 +9,9 @@ const handleError = require('../helpers/handleError.helper');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 // Routes
-const authRoute = require('../api/routes/auth.route');
-const roomRoute = require('../api/routes/room.route');
-const messageRoute = require('../api/routes/message.route');
+const authRoute = require('./auth.route');
+const roomRoute = require('./room.route');
+const messageRoute = require('./message.route');
 
 router.use('/auth', authRoute);
 
