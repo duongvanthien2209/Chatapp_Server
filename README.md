@@ -4,5 +4,7 @@
 * Tạo phòng
 * Chat với các thành viên trong phòng
 * Cập nhật thông tin cá nhân
+## Link Client
+[ChatAppClient](https://github.com/duongvanthien2209/Chatapp_Client)
 ## Link Demo
 [ChatApp](http://chat-app-client.surge.sh/)
