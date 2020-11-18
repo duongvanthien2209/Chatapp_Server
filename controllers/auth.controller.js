@@ -8,11 +8,11 @@ const cloudinary = require('../configs/cloudinaryConfig');
 const User = require('../models/User.model');
 const Response = require('../helpers/response.helper');
 
-module.exports.checkToken = async (req,res,next) => {
-  let { token } = req.body;
+module.exports.checkToken = async (req, res, next) => {
+  const { token } = req.body;
 
   try {
-    if(!token) {
+    if (!token) {
       throw new Error();
     }
 
@@ -23,11 +23,11 @@ module.exports.checkToken = async (req,res,next) => {
       throw new Error();
     }
 
-    Response.success(res, { message: 'Token hợp lệ', user });
+    return Response.success(res, { message: 'Token hợp lệ', user });
   } catch (error) {
     return next(new Error('Có lỗi xảy ra'));
   }
-}
+};
 
 module.exports.postLogin = async (req, res, next) => {
   const { email, password } = req.body;
@@ -35,7 +35,7 @@ module.exports.postLogin = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
 
-    if(!user) {
+    if (!user) {
       throw new Error('Email không tồn tại');
     }
 
@@ -45,7 +45,7 @@ module.exports.postLogin = async (req, res, next) => {
     }
 
     const token = await jwt.sign({ id: user.id }, process.env.PRIVATE_KEY);
-    Response.success(res, { message: 'Đăng nhập thành công', token, user });
+    return Response.success(res, { message: 'Đăng nhập thành công', token, user });
   } catch (error) {
     return next(error);
   }
@@ -59,7 +59,7 @@ module.exports.postRegister = async (req, res, next) => {
   try {
     const currentUser = await User.findOne({ email });
 
-    if(currentUser) {
+    if (currentUser) {
       throw new Error('Email đã tồn tại');
     }
 
@@ -67,7 +67,7 @@ module.exports.postRegister = async (req, res, next) => {
 
     const user = new User({ name, email, password });
     await user.save();
-    Response.success(res, { message: 'Tạo tài khoản thành công' });
+    return Response.success(res, { message: 'Tạo tài khoản thành công' });
   } catch (error) {
     return next(error);
   }
@@ -75,7 +75,11 @@ module.exports.postRegister = async (req, res, next) => {
 
 module.exports.postUpdate = async (req, res, next) => {
   let { password } = req.body;
-  const { file, params: { id }, body: { name, email } } = req;
+  const {
+    file,
+    params: { id },
+    body: { name, email },
+  } = req;
   const saltRounds = 10;
 
   try {
@@ -89,7 +93,7 @@ module.exports.postUpdate = async (req, res, next) => {
       throw new Error('User không tồn tại');
     }
 
-    let avatar = user.avatar;
+    let { avatar } = user;
     if (file) {
       let orgName = file.originalname || '';
       orgName = orgName.trim().replace(/ /g, '-');
@@ -119,7 +123,7 @@ module.exports.postUpdate = async (req, res, next) => {
     }
 
     user = await User.findById(id);
-    Response.success(res, { user, message: 'Bạn đã cập nhật thành công!' });
+    return Response.success(res, { user, message: 'Bạn đã cập nhật thành công!' });
   } catch (error) {
     return next(error);
   }

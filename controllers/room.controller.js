@@ -12,7 +12,7 @@ module.exports.getRoomsByUserId = async (req, res, next) => {
 
     const rooms = await Room.find({ members: userId });
 
-    Response.success(res, { rooms });
+    return Response.success(res, { rooms });
   } catch (error) {
     return next(error);
   }
@@ -31,9 +31,9 @@ module.exports.getRoomsByName = async (req, res) => {
       (item) => item.name.toLowerCase().indexOf(q.toLowerCase()) !== -1,
     );
 
-    Response.success(res, { rooms });
+    return Response.success(res, { rooms });
   } catch (error) {
-    Response.error(res, error);
+    return Response.error(res, error);
   }
 };
 
@@ -48,14 +48,14 @@ module.exports.postCreate = async (req, res, next) => {
 
     const currentRoom = await Room.findOne({ name });
 
-    if(currentRoom) {
+    if (currentRoom) {
       throw new Error('Tên phòng không được trùng');
     }
 
     const room = new Room({ name, members: [userId] });
     await room.save();
 
-    Response.success(res, { room, message: 'Tạo phòng thành công!' });
+    return Response.success(res, { room, message: 'Tạo phòng thành công!' });
   } catch (error) {
     return next(error);
   }
