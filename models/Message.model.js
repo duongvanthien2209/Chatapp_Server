@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
-const schema = mongoose.Schema({
+const { Schema } = mongoose;
+
+const schema = Schema({
   text: String,
-  userId: String,
-  roomId: String,
+  userId: { type: Schema.Types.ObjectId, ref: 'User' },
+  roomId: { type: Schema.Types.ObjectId, ref: 'Room' },
   dateCreate: Date,
 });
 

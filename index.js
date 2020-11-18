@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 require('dotenv').config();
 const express = require('express');
@@ -41,7 +42,7 @@ io.on('connection', (socket) => {
     try {
       const user = await User.findById(userId);
       const room = await Room.findByIdAndUpdate(roomId, {
-        $addToSet: { members: user.id.toString() },
+        $addToSet: { members: user._id },
       });
 
       if (!user || !room) {
@@ -50,13 +51,13 @@ io.on('connection', (socket) => {
 
       // Giởi tin nhắn từ server về cho chính người đó
       socket.emit('message', {
-        user: { name: 'admin' },
+        userId: { name: 'admin' },
         text: `${user.name}, welcome to the room ${room.name}`,
         dateCreate: new Date(),
       });
       // Gởi tin nhắn cho tất cả người còn lại trong chung phòng đó
       socket.broadcast.to(room.id.toString()).emit('message', {
-        user: { name: 'admin' },
+        userId: { name: 'admin' },
         text: `${user.name}, has joined!`,
         dateCreate: new Date(),
       });
@@ -80,16 +81,17 @@ io.on('connection', (socket) => {
     try {
       const now = new Date();
       let message = new Message({
-        userId,
-        roomId,
+        userId: mongoose.Types.ObjectId(userId),
+        roomId: mongoose.Types.ObjectId(roomId),
         text,
         dateCreate: now,
       });
       await message.save();
 
-      const user = await User.findById(userId);
+      // const user = await User.findById(userId);
+      message = await Message.findById(message._id).populate('userId');
       // eslint-disable-next-line no-underscore-dangle
-      message = { ...message._doc, user };
+      // message = { ...message._doc, user };
 
       io.to(roomId).emit('message', message);
       socket.emit('event', 'Done2');
@@ -107,7 +109,7 @@ io.on('connection', (socket) => {
 
     // Giởi tin nhắn từ server cho tất cả các user trong phòng
     io.to(roomId).emit('message', {
-      user: { name: 'admin' },
+      userId: { name: 'admin' },
       text: `${userName} has left.`,
     });
   });

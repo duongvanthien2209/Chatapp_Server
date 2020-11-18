@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
-const schema = mongoose.Schema({
+const { Schema } = mongoose;
+
+const schema = Schema({
   name: String,
-  members: { type: Array, default: [] },
+  members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
 
 const Room = mongoose.model('Room', schema, 'rooms');
