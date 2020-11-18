@@ -2,7 +2,6 @@
 /* eslint-disable no-console */
 require('dotenv').config();
 const express = require('express');
-const socketio = require('socket.io');
 const http = require('http');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -12,7 +11,6 @@ mongoose.connect(process.env.MONGO_URL);
 const app = express();
 const port = process.env.PORT || 5000;
 const server = http.createServer(app);
-const io = socketio(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,98 +20,15 @@ app.use(express.static('public'));
 // Routes
 const apiRoute = require('./routes/api.route');
 
-// Models
-const User = require('./models/User.model');
-const Room = require('./models/Room.model');
-const Message = require('./models/Message.model');
+// Helpers
+const handleSocketIo = require('./helpers/handleSocketIo.helper');
 
 app.use(cors());
 app.use('/api', apiRoute);
 
 app.get('/', (req, res) => res.send('All done'));
 
-io.on('connection', (socket) => {
-  // eslint-disable-next-line no-console
-  console.log('Has connection');
-
-  socket.on('join', async ({ roomId, userId }, callback) => {
-    // 1. Kiểm tra xem roomId, userId có tồn tại
-    // 2. Thêm user vào room
-    try {
-      const user = await User.findById(userId);
-      const room = await Room.findByIdAndUpdate(roomId, {
-        $addToSet: { members: user._id },
-      });
-
-      if (!user || !room) {
-        throw new Error('Có lỗi xảy ra');
-      }
-
-      // Giởi tin nhắn từ server về cho chính người đó
-      socket.emit('message', {
-        userId: { name: 'admin' },
-        text: `${user.name}, welcome to the room ${room.name}`,
-        dateCreate: new Date(),
-      });
-      // Gởi tin nhắn cho tất cả người còn lại trong chung phòng đó
-      socket.broadcast.to(room.id.toString()).emit('message', {
-        userId: { name: 'admin' },
-        text: `${user.name}, has joined!`,
-        dateCreate: new Date(),
-      });
-
-      socket.emit('event', 'Done1');
-
-      socket.join(room.id.toString());
-
-      // Chưa biết
-      // io.to(room._id).emit('roomData', { room: room._id, users: room.members });
-
-      return callback();
-    } catch (error) {
-      console.error(error);
-      return callback(error);
-    }
-  });
-
-  socket.on('sendMessage', async ({ userId, roomId, text }, callback) => {
-    // 1. Tạo message mới
-    try {
-      const now = new Date();
-      let message = new Message({
-        userId: mongoose.Types.ObjectId(userId),
-        roomId: mongoose.Types.ObjectId(roomId),
-        text,
-        dateCreate: now,
-      });
-      await message.save();
-
-      // const user = await User.findById(userId);
-      message = await Message.findById(message._id).populate('userId');
-      // eslint-disable-next-line no-underscore-dangle
-      // message = { ...message._doc, user };
-
-      io.to(roomId).emit('message', message);
-      socket.emit('event', 'Done2');
-
-      return callback();
-    } catch (error) {
-      console.error(error);
-      return callback(error);
-    }
-  });
-
-  socket.on('disconnect', async ({ roomId, userName }) => {
-    // eslint-disable-next-line no-console
-    console.log('User has left');
-
-    // Giởi tin nhắn từ server cho tất cả các user trong phòng
-    io.to(roomId).emit('message', {
-      userId: { name: 'admin' },
-      text: `${userName} has left.`,
-    });
-  });
-});
+handleSocketIo(server);
 
 // eslint-disable-next-line no-console
 server.listen(port, () => console.log(`Server has started on port ${port}`));
