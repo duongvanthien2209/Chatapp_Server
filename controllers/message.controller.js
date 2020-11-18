@@ -19,14 +19,6 @@ module.exports.getMessagesByRoomId = async (req, res, next) => {
       messages = await Message.find({
         roomId: mongoose.Types.ObjectId(roomId),
       }).populate('userId');
-      // messages = await Promise.all(
-      //   messages.map(async (item) => {
-      //     const user = await User.findById(item.userId);
-
-      //     // eslint-disable-next-line no-underscore-dangle
-      //     return { ...item._doc, user };
-      //   }),
-      // );
 
       messages.sort((a, b) => a.dateCreate.getTime() - b.dateCreate.getTime());
     } catch (error) {
