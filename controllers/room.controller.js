@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Room = require('../models/Room.model');
 
 const Response = require('../helpers/response.helper');
@@ -14,6 +15,7 @@ module.exports.getRoomsByUserId = async (req, res, next) => {
 
     return Response.success(res, { rooms });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
@@ -33,6 +35,7 @@ module.exports.getRoomsByName = async (req, res) => {
 
     return Response.success(res, { rooms });
   } catch (error) {
+    console.error(error);
     return Response.error(res, error);
   }
 };
@@ -57,6 +60,7 @@ module.exports.postCreate = async (req, res, next) => {
 
     return Response.success(res, { room, message: 'Tạo phòng thành công!' });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };

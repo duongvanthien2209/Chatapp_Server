@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -25,6 +26,7 @@ module.exports.checkToken = async (req, res, next) => {
 
     return Response.success(res, { message: 'Token hợp lệ', user });
   } catch (error) {
+    console.error(error);
     return next(new Error('Có lỗi xảy ra'));
   }
 };
@@ -47,6 +49,7 @@ module.exports.postLogin = async (req, res, next) => {
     const token = await jwt.sign({ id: user.id }, process.env.PRIVATE_KEY);
     return Response.success(res, { message: 'Đăng nhập thành công', token, user });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
@@ -69,6 +72,7 @@ module.exports.postRegister = async (req, res, next) => {
     await user.save();
     return Response.success(res, { message: 'Tạo tài khoản thành công' });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
@@ -125,6 +129,7 @@ module.exports.postUpdate = async (req, res, next) => {
     user = await User.findById(id);
     return Response.success(res, { user, message: 'Bạn đã cập nhật thành công!' });
   } catch (error) {
+    console.error(error);
     return next(error);
   }
 };

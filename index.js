@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 require('dotenv').config();
 const express = require('express');
 const socketio = require('socket.io');
@@ -69,6 +70,7 @@ io.on('connection', (socket) => {
 
       return callback();
     } catch (error) {
+      console.error(error);
       return callback(error);
     }
   });
@@ -94,6 +96,7 @@ io.on('connection', (socket) => {
 
       return callback();
     } catch (error) {
+      console.error(error);
       return callback(error);
     }
   });

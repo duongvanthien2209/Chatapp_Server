@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
@@ -21,6 +22,7 @@ module.exports.checkToken = async (req, res, next) => {
     res.locals.user = user;
     next();
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };

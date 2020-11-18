@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const Message = require('../models/Message.model');
 const User = require('../models/User.model');
 const Response = require('../helpers/response.helper');
@@ -22,8 +23,9 @@ module.exports.getMessagesByRoomId = async (req, res) => {
 
     messages.sort((a, b) => a.dateCreate.getTime() - b.dateCreate.getTime());
 
-    Response.success(res, { messages });
+    return Response.success(res, { messages });
   } catch (error) {
-    Response.error(res, error);
+    console.error(error);
+    return Response.error(res, error);
   }
 };
