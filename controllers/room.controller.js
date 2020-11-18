@@ -22,7 +22,7 @@ module.exports.getRoomsByUserId = async (req, res, next) => {
   }
 };
 
-module.exports.getRoomsByName = async (req, res) => {
+module.exports.getRoomsByName = async (req, res, next) => {
   const { q } = req.query;
 
   try {
@@ -38,7 +38,7 @@ module.exports.getRoomsByName = async (req, res) => {
     return Response.success(res, { rooms });
   } catch (error) {
     console.error(error);
-    return Response.error(res, error);
+    return next(error);
   }
 };
 

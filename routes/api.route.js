@@ -15,11 +15,13 @@ const messageRoute = require('./message.route');
 
 router.use('/auth', authRoute);
 
+// router.use(handleError);
+
 router.use(authMiddleware.checkToken);
 
 router.use('/rooms', roomRoute);
 
-router.use(handleError);
+// router.use(handleError);
 
 router.use('/messages', messageRoute);
 

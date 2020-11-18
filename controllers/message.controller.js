@@ -5,7 +5,7 @@ const Message = require('../models/Message.model');
 // const User = require('../models/User.model');
 const Response = require('../helpers/response.helper');
 
-module.exports.getMessagesByRoomId = async (req, res) => {
+module.exports.getMessagesByRoomId = async (req, res, next) => {
   const { roomId } = req.params;
 
   try {
@@ -36,6 +36,6 @@ module.exports.getMessagesByRoomId = async (req, res) => {
     return Response.success(res, { messages });
   } catch (error) {
     console.error(error);
-    return Response.error(res, error);
+    return next(error);
   }
 };
