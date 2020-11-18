@@ -1,7 +1,7 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
+const fs = require('fs-promise');
 
 const cloudinary = require('../configs/cloudinaryConfig');
 
@@ -99,7 +99,7 @@ module.exports.postUpdate = async (req, res, next) => {
       orgName = orgName.trim().replace(/ /g, '-');
       const fullPathInServ = file.path;
       const newFullPath = `${fullPathInServ}-${orgName}`;
-      fs.renameSync(fullPathInServ, newFullPath);
+      fs.rename(fullPathInServ, newFullPath);
 
       const result = await cloudinary.uploader.upload(newFullPath);
       avatar = result.url;
