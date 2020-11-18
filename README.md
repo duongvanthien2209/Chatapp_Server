@@ -33,15 +33,6 @@
 ### Install server dependencies
 ***
 `npm install`
-### Thêm file .env
-***
-```.env
-PORT=5000
-MONGO_URL= <your_mongoDB_URI>
-CLOUD_NAME= <your_cloud_name>
-API_KEY= <your_cloud_api_key>
-API_SECRET= <your_cloud_api_secret>
-```
 ### Install client dependencies
 ***
 `npm install`
